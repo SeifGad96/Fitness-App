@@ -19,7 +19,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,8 +40,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.atry.AuthState
-import com.example.atry.AuthViewModel
+import com.example.atry.viewmodel.AuthState
+import com.example.atry.viewmodel.AuthViewModel
 
 @Composable
 fun SignUp(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
@@ -69,11 +68,11 @@ fun SignUp(modifier: Modifier = Modifier, navController: NavController, authView
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Sign Up", style = MaterialTheme.typography.headlineMedium)
+        Text(text = "Sign Up", style = MaterialTheme.typography.headlineMedium,color=Color.DarkGray)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
+        OutlinedTextField(
             value = username,
             onValueChange = {
                 username = it

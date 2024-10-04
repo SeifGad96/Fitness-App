@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.firebase.auth)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.contentpager)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,4 +80,21 @@ dependencies {
 
     implementation ("androidx.navigation:navigation-compose:2.8.1")
     implementation ("androidx.compose.material:material-icons-extended:1.7.0")
+//retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    //gson
+    implementation ("com.google.code.gson:gson:2.11.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation ("androidx.compose.material:material:1.5.1")
+
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.8.0")
+
+    implementation ("androidx.compose.runtime:runtime-livedata:1.5.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.5")
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.3")
+    implementation("androidx.compose.runtime:runtime-rxjava2:1.7.3")
 }

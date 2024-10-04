@@ -1,6 +1,5 @@
 package com.example.atry.pages
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.atry.AuthViewModel
+import com.example.atry.viewmodel.AuthViewModel
 import com.example.atry.calculatorcomponents.GenderBox
 import com.example.atry.calculatorcomponents.HeightAndAge
 
@@ -56,8 +55,10 @@ fun Calculator(modifier: Modifier = Modifier, navController: NavController, auth
     Surface(color = Color(9, 12, 34, 1)) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
+
             AppBar(text = "BMI CALCULATOR", onTap = {}, color = Color(16,20,39))
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp)
+                )
 
             // Gender Selection Row
             Row(horizontalArrangement = Arrangement.Center) {
@@ -174,8 +175,8 @@ fun RoundIconButton(
         )
     }
 }
-/*@Preview(showSystemUi = true)
-@Composable
-fun BMIPreview() {
-    Calculator()
-}*/
+//@Preview(showSystemUi = true)
+//@Composable
+//fun BMIPreview() {
+//    Calculator()
+//}

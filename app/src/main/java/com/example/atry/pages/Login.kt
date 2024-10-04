@@ -40,8 +40,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.atry.AuthState
-import com.example.atry.AuthViewModel
+import com.example.atry.viewmodel.AuthState
+import com.example.atry.viewmodel.AuthViewModel
 
 @Composable
 fun Login(modifier: Modifier = Modifier,navController: NavController,authViewModel: AuthViewModel) {

@@ -1,4 +1,4 @@
-package com.example.atry
+package com.example.atry.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,8 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class AuthViewModel : ViewModel() {
+
 
     var username by mutableStateOf("")
         private set
@@ -47,7 +49,8 @@ class AuthViewModel : ViewModel() {
                 if (task.isSuccessful){
                     _authState.value = AuthState.Authenticated
                 }else{
-                    _authState.value = AuthState.Error(task.exception?.message?:"something went wrong")
+                    _authState.value =
+                        AuthState.Error(task.exception?.message ?: "something went wrong")
                 }
             }
     }
@@ -65,7 +68,8 @@ class AuthViewModel : ViewModel() {
                 if (task.isSuccessful){
                     _authState.value = AuthState.Authenticated
                 }else{
-                    _authState.value = AuthState.Error(task.exception?.message?:"something went wrong")
+                    _authState.value =
+                        AuthState.Error(task.exception?.message ?: "something went wrong")
                 }
             }
     }
