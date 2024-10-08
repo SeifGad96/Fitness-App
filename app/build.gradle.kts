@@ -87,14 +87,12 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
-
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation ("androidx.compose.material:material:1.5.1")
-
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.8.0")
-
     implementation ("androidx.compose.runtime:runtime-livedata:1.5.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.5")
     implementation("androidx.compose.runtime:runtime-livedata:1.7.3")
     implementation("androidx.compose.runtime:runtime-rxjava2:1.7.3")
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
 }

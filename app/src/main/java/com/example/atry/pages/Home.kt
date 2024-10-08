@@ -1,6 +1,5 @@
 package com.example.atry.pages
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,40 +12,41 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.atry.R
 import com.example.atry.api.Exercise
-import com.example.atry.viewmodel.AuthViewModel
-import com.example.atry.viewmodel.HomeViewModel
-import androidx.compose.runtime.collectAsState
+import com.example.atry.navigate.BottomNavigationBar
+import com.example.atry.viewmodel.ExercisesViewModel
 
 
 @Composable
 fun Home(
     navController: NavController,
-    homeViewModel: HomeViewModel,
+    exercisesViewModel: ExercisesViewModel
     ) {
-    val exercises by homeViewModel.exercises.collectAsState()
+    val exercises by exercisesViewModel.exercises.collectAsState()
+    var selectedBodyPart by remember { mutableStateOf("back") }
+
+    LaunchedEffect(selectedBodyPart) {
+        exercisesViewModel.fetchExercises(selectedBodyPart, limit = 10, offset = 0)
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -91,9 +91,7 @@ fun Home(
                 }) {
                     items(exercises) { exercise ->
                         TodayPlanItem(
-                            exerciseName = exercise.name,
-                            gifUrl = exercise.gifUrl,
-                            equipment = exercise.equipment
+                            exercise
                         ) {
                             navController.navigate("exercise_details/${exercise.id}")
 
@@ -101,14 +99,13 @@ fun Home(
                     }
                 }
 
-                BottomNavigationBar(navController)
+
 
             }
 
         }
+        BottomNavigationBar(navController)
     }
-
-
 }
 @Composable
 fun WorkoutCard(exercise: Exercise, onClick: () -> Unit) {
@@ -139,10 +136,10 @@ fun WorkoutCard(exercise: Exercise, onClick: () -> Unit) {
     }
 }
 
-var exercise: Exercise? = null
+
 
 @Composable
-fun TodayPlanItem(exerciseName: String, gifUrl: String, equipment: String, onClick: () -> Unit) {
+fun TodayPlanItem(exercise:Exercise, onClick: () -> Unit) {
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -157,15 +154,15 @@ fun TodayPlanItem(exerciseName: String, gifUrl: String, equipment: String, onCli
                 }
         ) {
             AsyncImage(
-                model = gifUrl,
+                model = exercise.gifUrl,
                 contentDescription = exercise?.name,
                 modifier = Modifier
                     .size(64.dp)
                     .padding(end = 16.dp)
             )
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = exerciseName, style = MaterialTheme.typography.titleMedium)
-                Text(text = "$equipment", style = MaterialTheme.typography.titleMedium)
+                Text(text = exercise.name, style = MaterialTheme.typography.titleMedium)
+                Text(text = "${exercise.equipment}", style = MaterialTheme.typography.titleMedium)
 
             }
         }
@@ -173,85 +170,6 @@ fun TodayPlanItem(exerciseName: String, gifUrl: String, equipment: String, onCli
     }
 }
 
-@Composable
-fun BottomNavigationBar(navController: NavController) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            shape = RoundedCornerShape(20.dp),
-            modifier = Modifier
-                .align(alignment = Alignment.BottomEnd)
-                .padding(30.dp)
-                .padding(bottom = 20.dp),
-            color = Color.White,
-            elevation = 4.dp
-        ) {
-            BottomNavigation(
-                modifier = Modifier.background(color = Color.Blue)
-            ) {
-                BottomNavigationItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_home),
-                            contentDescription = "Home"
-                        )
-                    },
-                    selected = true,
-                    onClick = {
-                        navController.navigate("home")
-                    }
-                )
-                BottomNavigationItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_explore),
-                            contentDescription = "Explore"
-                        )
-                    },
-                    selected = false,
-                    onClick = {
-                        navController.navigate("explore")
-                    }
-                )
-                BottomNavigationItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_food_bank_24),
-                            contentDescription = "Food"
-                        )
-                    },
-                    selected = false,
-                    onClick = {
-                        navController.navigate("food")
-                    }
-                )
-                BottomNavigationItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_settings),
-                            contentDescription = "Setting"
-                        )
-                    },
-                    selected = false,
-                    onClick = {
-                        navController.navigate("setting")
-                    }
-                )
-                BottomNavigationItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_person),
-                            contentDescription = "User Profile"
-                        )
-                    },
-                    selected = false,
-                    onClick = {
-                        navController.navigate("profile")
-                    }
-                )
-            }
-        }
-    }
 
-}
 
 

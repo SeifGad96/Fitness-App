@@ -14,21 +14,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.atry.pages.BodyBuilding
 
 import com.example.atry.pages.Calculator
+import com.example.atry.pages.CardioExercises
+import com.example.atry.pages.ChallengeDetailsScreen
 import com.example.atry.pages.ExerciseDetails
 
 import com.example.atry.pages.Explore
 import com.example.atry.pages.Food
 import com.example.atry.pages.Home
 import com.example.atry.pages.Login
+import com.example.atry.pages.QuarantineWorkout
 import com.example.atry.pages.Setting
 import com.example.atry.pages.ShowView
 import com.example.atry.pages.SignUp
 import com.example.atry.pages.UserProfile
+import com.example.atry.pages.WorkoutCategoriesScreen
+import com.example.atry.pages.YogaExercises
 
 import com.example.atry.ui.theme.TryTheme
 import com.example.atry.viewmodel.AuthViewModel
+import com.example.atry.viewmodel.ExercisesViewModel
 import com.example.atry.viewmodel.HomeViewModel
 
 class MainActivity : ComponentActivity() {
@@ -37,33 +44,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-
-
-
-            Scaffold { innerPadding ->
-                AppNavigation(
-                    modifier = Modifier.padding(innerPadding),
-                    authViewModel = AuthViewModel(),
-                    homeViewModel = HomeViewModel()
-                )
+            TryTheme {
+                Scaffold { innerPadding ->
+                    AppNavigation(
+                        modifier = Modifier.padding(innerPadding),
+                        authViewModel = AuthViewModel(),
+                        exercisesViewModel = ExercisesViewModel()
+                    )
+                }
             }
-            Root {
-                AppNavigation(authViewModel = AuthViewModel(), homeViewModel = HomeViewModel())
-            }
-
-
-        }
-    }
-}
-
-@Composable
-fun Root(content: @Composable () -> Unit) {
-    TryTheme {
-
-        Surface(
-            color = Color(255, 255, 255)
-        ) {
-            content()
         }
     }
 }
@@ -72,7 +61,7 @@ fun Root(content: @Composable () -> Unit) {
 fun AppNavigation(
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel,
-    homeViewModel: HomeViewModel
+    exercisesViewModel: ExercisesViewModel
 ) {
     val navController = rememberNavController()
 
@@ -84,10 +73,10 @@ fun AppNavigation(
             SignUp(modifier, navController, authViewModel)
         }
         composable("home") {
-            Home( navController, homeViewModel)
+            Home(navController, exercisesViewModel)
         }
         composable("explore") {
-            Explore()
+            Explore(modifier, navController)
         }
         composable("profile") {
             UserProfile()
@@ -101,18 +90,27 @@ fun AppNavigation(
         composable("exercise_details/{exerciseId}") { backStackEntry ->
             val exerciseId = backStackEntry.arguments?.getString("exerciseId")
             ExerciseDetails(
-                navController = navController,
                 exerciseId = exerciseId ?: "",
-                viewModel = homeViewModel
+                exercisesViewModel = exercisesViewModel
             )
         }
-
         composable("calculator") {
             Calculator(modifier, navController, authViewModel)
         }
         composable("result_bmi/{bmi}") { backStackEntry ->
             val bmi = backStackEntry.arguments?.getString("bmi")
             ShowView(value = bmi, navController = navController)
+        }
+        composable("quarantine_workout") {
+            QuarantineWorkout()
+        }
+        composable("challenge_details/{challengeName}") { backStackEntry ->
+            val challengeName = backStackEntry.arguments?.getString("challengeName")
+            ChallengeDetailsScreen(challengeName = challengeName ?: "")
+        }
+        composable("workout_categories_screen/{workoutCategoryName}") { backStackEntry ->
+            val workoutCategoryName = backStackEntry.arguments?.getString("workoutCategoryName")
+            WorkoutCategoriesScreen(workoutCategoryName ?: "", modifier, exercisesViewModel,navController)
         }
     }
 }
