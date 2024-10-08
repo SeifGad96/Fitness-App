@@ -95,4 +95,5 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.7.3")
     implementation("androidx.compose.runtime:runtime-rxjava2:1.7.3")
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
+    implementation(kotlin("script-runtime"))
 }
