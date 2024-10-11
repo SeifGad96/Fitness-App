@@ -20,11 +20,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,28 +38,28 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.atry.viewmodel.AuthState
+import androidx.navigation.compose.rememberNavController
 import com.example.atry.viewmodel.AuthViewModel
 
 @Composable
-fun SignUp(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
+fun SignUp(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    authViewModel: AuthViewModel
+) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
-    val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(authState.value) {
-        when(authState.value){
-            is AuthState.Authenticated -> navController.navigate("calculator")
-            is AuthState.Error -> Toast.makeText(context, (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
-            else -> Unit
-        }
-    }
+    val toastMessage by authViewModel._toastMessage.observeAsState()
+
 
     Column(
         modifier = Modifier
@@ -68,7 +68,7 @@ fun SignUp(modifier: Modifier = Modifier, navController: NavController, authView
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Sign Up", style = MaterialTheme.typography.headlineMedium,color=Color.DarkGray)
+        Text(text = "Sign Up", style = MaterialTheme.typography.headlineMedium, color = Color.DarkGray)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -76,7 +76,6 @@ fun SignUp(modifier: Modifier = Modifier, navController: NavController, authView
             value = username,
             onValueChange = {
                 username = it
-                // to update the username
                 authViewModel.updateUsername(it)
             },
             label = { Text("Username") },
@@ -109,11 +108,9 @@ fun SignUp(modifier: Modifier = Modifier, navController: NavController, authView
                     Icons.Filled.Visibility
                 else Icons.Filled.VisibilityOff
 
-                // Please provide localized description for accessibility services
-                val description = if (passwordVisible) "Hide password" else "Show password"
-
-                IconButton(onClick = {passwordVisible = !passwordVisible}){
-                    Icon(imageVector  = image, contentDescription = "eye")
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image,
+                        contentDescription = if (passwordVisible) "Hide password" else "Show password")
                 }
             }
         )
@@ -122,9 +119,12 @@ fun SignUp(modifier: Modifier = Modifier, navController: NavController, authView
 
         Button(
             onClick = {
-                authViewModel.signup(email, password)
-                navController.navigate("calculator")
-            },enabled = authState.value != AuthState.Loading,
+                if (email.isNotEmpty() && password.isNotEmpty()) {
+                    authViewModel.signUp(email, password, username)
+                } else {
+                    Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Sign Up")
@@ -134,10 +134,8 @@ fun SignUp(modifier: Modifier = Modifier, navController: NavController, authView
 
         Text(
             buildAnnotatedString {
-                withStyle(style = SpanStyle(
-                    color = Color.DarkGray)
-                ){
-                    append("already have an account? ")
+                withStyle(style = SpanStyle(color = Color.DarkGray)) {
+                    append("Already have an account? ")
                 }
                 withStyle(
                     style = SpanStyle(
@@ -145,22 +143,30 @@ fun SignUp(modifier: Modifier = Modifier, navController: NavController, authView
                         textDecoration = TextDecoration.Underline
                     )
                 ) {
-                    append("click here")
+                    append("Click here")
                 }
-                withStyle(style = SpanStyle(
-                    color = Color.DarkGray)
-                ){
+                withStyle(style = SpanStyle(color = Color.DarkGray)) {
                     append(" to login")
                 }
             },
-            modifier = Modifier.clickable { navController.navigate("login") }
+            modifier = Modifier.clickable { navController.navigate("login") },
+            fontSize = 14.sp
         )
-
+    }
+    toastMessage?.let { message ->
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        authViewModel.clearToastMessage()
     }
 }
 
-/*@Preview(showBackground = true)
+
+@Preview(showSystemUi = true)
 @Composable
 fun SignUpPreview() {
-    SignUp()
-}*/
+    SignUp(
+        modifier = Modifier,
+        navController = rememberNavController(),
+        authViewModel = AuthViewModel()
+    )
+}
+
