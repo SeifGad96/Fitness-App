@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.contentpager)
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -94,6 +95,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.5")
     implementation("androidx.compose.runtime:runtime-livedata:1.7.3")
     implementation("androidx.compose.runtime:runtime-rxjava2:1.7.3")
-    implementation ("androidx.datastore:datastore-preferences:1.0.0")
     implementation(kotlin("script-runtime"))
+
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation ("com.google.firebase:firebase-firestore:24.4.2")
 }

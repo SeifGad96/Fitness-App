@@ -26,7 +26,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,8 +44,6 @@ import com.example.atry.calculatorcomponents.HeightAndAge
 @Composable
 fun Calculator(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
 
-    val authState = authViewModel.authState.observeAsState()
-
     val genderSelectState = remember { mutableStateOf(0) }
     val weightSelectState = remember { mutableStateOf(60) }
     val ageSelectState = remember { mutableStateOf(20) }
@@ -55,10 +52,8 @@ fun Calculator(modifier: Modifier = Modifier, navController: NavController, auth
     Surface(color = Color(9, 12, 34, 1)) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-
             AppBar(text = "BMI CALCULATOR", onTap = {}, color = Color(16,20,39))
-            Spacer(modifier = Modifier.height(20.dp)
-                )
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Gender Selection Row
             Row(horizontalArrangement = Arrangement.Center) {
@@ -88,11 +83,19 @@ fun Calculator(modifier: Modifier = Modifier, navController: NavController, auth
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Calculate BMI Button
+            // Calculate BMI Button and Save Data
             AppBar(text = "CALCULATE YOUR BMI", onTap = {
-                val value = (weightSelectState.value / (sliderState.value * sliderState.value)) * 10000
-                val lastValue = "%.0f".format(value) // Formatting the BMI value
-                navController.navigate("result_bmi/$lastValue") // Navigate to the second page
+                val height = sliderState.value
+                val weight = weightSelectState.value
+                val age = ageSelectState.value
+                val bmi = (weight / (height * height)) * 10000
+                val formattedBmi = "%.0f".format(bmi) // Formatting the BMI value
+
+                // Save to Firestore
+                authViewModel.saveUserData(weight, height, age, 1, formattedBmi)
+
+                // Navigate to the result page
+                navController.navigate("result_bmi/$formattedBmi")
             }, color = Color(234, 21, 86))
 
         }

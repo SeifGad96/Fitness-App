@@ -1,5 +1,7 @@
 package com.example.atry.pages
 
+import android.util.Log
+import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,24 +41,33 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.atry.viewmodel.AuthState
 import com.example.atry.viewmodel.AuthViewModel
 
 @Composable
-fun Login(modifier: Modifier = Modifier,navController: NavController,authViewModel: AuthViewModel) {
+fun Login(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    authViewModel: AuthViewModel
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
-    val authState = authViewModel.authState.observeAsState()
+    val firebaseUser by authViewModel.firebaseUser.observeAsState(null)
     val context = LocalContext.current
+    val toastMessage by authViewModel._toastMessage.observeAsState()
 
-    LaunchedEffect(authState.value) {
-        when(authState.value){
-            is AuthState.Authenticated -> navController.navigate("home")
-            is AuthState.Error -> Toast.makeText(context, (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
-            else -> Unit
+    LaunchedEffect(firebaseUser) {
+        if (firebaseUser != null) {
+            navController.navigate("home") {
+                popUpTo("login") { inclusive = true } // Prevent going back to login
+            }
+        }
+        toastMessage?.let { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            authViewModel.clearToastMessage()
         }
     }
 
@@ -67,7 +78,11 @@ fun Login(modifier: Modifier = Modifier,navController: NavController,authViewMod
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Login", style = MaterialTheme.typography.headlineMedium,color = Color.White)
+        Text(
+            text = "Login",
+            style = MaterialTheme.typography.headlineMedium,
+            color = Color.White
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -76,8 +91,16 @@ fun Login(modifier: Modifier = Modifier,navController: NavController,authViewMod
             onValueChange = { email = it },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            isError = !isValidEmail(email)
         )
+        if (!isValidEmail(email)) {
+            Text(
+                text = "Invalid email format",
+                color = Color.Red,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -87,7 +110,6 @@ fun Login(modifier: Modifier = Modifier,navController: NavController,authViewMod
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            placeholder = { Text("Password") },
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
@@ -95,30 +117,52 @@ fun Login(modifier: Modifier = Modifier,navController: NavController,authViewMod
                     Icons.Filled.Visibility
                 else Icons.Filled.VisibilityOff
 
-                IconButton(onClick = {passwordVisible = !passwordVisible}){
-                    Icon(imageVector  = image, contentDescription = "eye")
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image, contentDescription = "Toggle Password Visibility")
                 }
             }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Forgot Password?",
+            modifier = Modifier
+                .align(Alignment.End)
+                .clickable {
+                    if (email.isNotEmpty()) {
+                        authViewModel.sendPasswordResetEmail(email)
+                        Toast.makeText(context, "Password reset email sent", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Please enter your email", Toast.LENGTH_SHORT).show()
+                    }
+                },
+            color = Color.Blue,
+            textDecoration = TextDecoration.Underline
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = {
-                authViewModel.login(email, password)
-            },enabled = authState.value != AuthState.Loading,
+                if (email.isNotEmpty() && password.isNotEmpty()) {
+                    Log.d("LoginButton", "Login button clicked")
+                    authViewModel.logIn(email, password)
+                } else {
+                    Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Login")
         }
 
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             buildAnnotatedString {
-                withStyle(style = SpanStyle(
-                    color = Color.DarkGray)
-                ){
+                withStyle(style = SpanStyle(color = Color.DarkGray)) {
                     append("Don't have an account? ")
                 }
                 withStyle(
@@ -127,19 +171,23 @@ fun Login(modifier: Modifier = Modifier,navController: NavController,authViewMod
                         textDecoration = TextDecoration.Underline
                     )
                 ) {
-                    append("click here")
+                    append("Click here")
                 }
-                withStyle(style = SpanStyle(
-                    color = Color.DarkGray)
-                ){
-                append(" to create one.")
+                withStyle(style = SpanStyle(color = Color.DarkGray)) {
+                    append(" to create one.")
                 }
             },
-            modifier = Modifier.clickable { navController.navigate("sign_up") }
+            modifier = Modifier.clickable { navController.navigate("sign_up") },
+            fontSize = 14.sp
         )
 
     }
 }
+
+private fun isValidEmail(email: String): Boolean {
+    return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
+
 
 /*@Preview(showBackground = true)
 @Composable

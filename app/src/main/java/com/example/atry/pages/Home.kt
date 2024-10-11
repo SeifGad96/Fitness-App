@@ -21,32 +21,41 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.atry.api.Exercise
 import com.example.atry.navigate.BottomNavigationBar
+import com.example.atry.viewmodel.AuthViewModel
 import com.example.atry.viewmodel.ExercisesViewModel
-
 
 @Composable
 fun Home(
     navController: NavController,
-    exercisesViewModel: ExercisesViewModel
+    exercisesViewModel: ExercisesViewModel,
+    authViewModel: AuthViewModel = viewModel()
     ) {
     val exercises by exercisesViewModel.exercises.collectAsState()
     var selectedBodyPart by remember { mutableStateOf("back") }
 
-    LaunchedEffect(selectedBodyPart) {
+    val firebaseUser by authViewModel.firebaseUser.observeAsState()
+    val username = firebaseUser?.displayName ?: "Guest"
+
+    LaunchedEffect(selectedBodyPart, Unit) {
         exercisesViewModel.fetchExercises(selectedBodyPart, limit = 10, offset = 0)
     }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -57,7 +66,7 @@ fun Home(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             } else {
                 Text(
-                    text = "Hello \uD83D\uDD25",
+                    text = "Hello $username",
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     fontSize = TextUnit.Unspecified,
