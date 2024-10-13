@@ -1,0 +1,100 @@
+package com.example.atry.navigate
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.atry.R
+
+@Composable
+fun BottomNavigationBar(navController: NavController) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier
+                .align(alignment = Alignment.BottomEnd)
+                .padding(30.dp)
+                .padding(bottom = 20.dp),
+            color = Color.White,
+            elevation = 4.dp
+        ) {
+            BottomNavigation(
+                modifier = Modifier.background(color = Color.Blue)
+            ) {
+                BottomNavigationItem(
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_home),
+                            contentDescription = "Home"
+                        )
+                    },
+                    selected = true,
+                    onClick = {
+                        navController.navigate("home")
+                    }
+                )
+                BottomNavigationItem(
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_explore),
+                            contentDescription = "Explore"
+                        )
+                    },
+                    selected = false,
+                    onClick = {
+                        navController.navigate("explore")
+                    }
+                )
+                BottomNavigationItem(
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_food_bank_24),
+                            contentDescription = "Food"
+                        )
+                    },
+                    selected = false,
+                    onClick = {
+                        navController.navigate("food")
+                    }
+                )
+                BottomNavigationItem(
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_settings),
+                            contentDescription = "Setting"
+                        )
+                    },
+                    selected = false,
+                    onClick = {
+                        navController.navigate("setting")
+                    }
+                )
+                BottomNavigationItem(
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_person),
+                            contentDescription = "User Profile"
+                        )
+                    },
+                    selected = false,
+                    onClick = {
+                        navController.navigate("profile")
+                    }
+                )
+            }
+        }
+    }
+
+}

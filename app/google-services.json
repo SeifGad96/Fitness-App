@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "361694765454",
+    "project_id": "login-fitness-d42a6",
+    "storage_bucket": "login-fitness-d42a6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:361694765454:android:f7c16a17f71bd19ca284df",
+        "android_client_info": {
+          "package_name": "com.example.atry"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdrJpJqLxl3Tyh-S_-fS2QpxHgqNiqoxc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
