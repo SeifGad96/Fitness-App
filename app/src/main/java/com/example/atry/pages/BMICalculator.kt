@@ -1,5 +1,6 @@
 package com.example.atry.pages
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,28 +33,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.atry.viewmodel.AuthViewModel
 import com.example.atry.calculatorcomponents.GenderBox
 import com.example.atry.calculatorcomponents.HeightAndAge
 
 @Composable
-fun Calculator(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
+fun Calculator( navController: NavController, authViewModel: AuthViewModel
+                ,age:Int=20,gender:Int=0,weight:Int=60,slider:Float=130f
+                ,navigate:Boolean=true
+) {
 
-    val genderSelectState = remember { mutableStateOf(0) }
-    val weightSelectState = remember { mutableStateOf(60) }
-    val ageSelectState = remember { mutableStateOf(20) }
-    val sliderState = remember { mutableStateOf(130f) }
+    val genderSelectState = remember { mutableStateOf(gender) }
+    val weightSelectState = remember { mutableStateOf(weight) }
+    val ageSelectState = remember { mutableStateOf(age) }
+    val sliderState = remember { mutableStateOf(slider) }
 
+    val context=LocalContext.current
     Surface(color = Color(9, 12, 34, 1)) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
             AppBar(text = "BMI CALCULATOR", onTap = {}, color = Color(16,20,39))
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier
+                .height(20.dp)
+                .padding(bottom = 100.dp))
 
             // Gender Selection Row
             Row(horizontalArrangement = Arrangement.Center) {
@@ -80,7 +91,6 @@ fun Calculator(modifier: Modifier = Modifier, navController: NavController, auth
                 HeightAndAge(text = "WEIGHT", value = weightSelectState)
                 HeightAndAge(text = "AGE", value = ageSelectState)
             }
-
             Spacer(modifier = Modifier.height(20.dp))
 
             // Calculate BMI Button and Save Data
@@ -94,8 +104,13 @@ fun Calculator(modifier: Modifier = Modifier, navController: NavController, auth
                 // Save to Firestore
                 authViewModel.saveUserData(weight, height, age, 1, formattedBmi)
 
+                Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show();
                 // Navigate to the result page
-                navController.navigate("result_bmi/$formattedBmi")
+                if (navigate)
+                {
+                    navController.navigate("result_bmi/$formattedBmi")
+
+                }
             }, color = Color(234, 21, 86))
 
         }
@@ -144,7 +159,9 @@ fun AppBar(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .height(height = 70.dp).background(color = color).clickable { onTap.invoke() }
+            .height(height = 70.dp)
+            .background(color = color)
+            .clickable { onTap.invoke() }
     ) {
         Text(text = text, fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center, style =
@@ -178,8 +195,10 @@ fun RoundIconButton(
         )
     }
 }
-//@Preview(showSystemUi = true)
-//@Composable
-//fun BMIPreview() {
-//    Calculator()
-//}
+@Preview(apiLevel = 33, showSystemUi = true)
+@Composable
+fun BMIPreview() {
+    val navController = rememberNavController()
+    val authViewModel = AuthViewModel()
+    Calculator(navController = navController, authViewModel = authViewModel)
+}

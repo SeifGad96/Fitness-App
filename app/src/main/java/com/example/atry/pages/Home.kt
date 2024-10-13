@@ -1,5 +1,6 @@
 package com.example.atry.pages
 
+import Back_Handler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -114,6 +115,7 @@ fun Home(
 
         }
         BottomNavigationBar(navController)
+        Back_Handler()
     }
 }
 @Composable

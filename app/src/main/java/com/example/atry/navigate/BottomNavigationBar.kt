@@ -42,7 +42,10 @@ fun BottomNavigationBar(navController: NavController) {
                     },
                     selected = true,
                     onClick = {
-                        navController.navigate("home")
+                        navController.navigate("home"){
+                            popUpTo(0) { inclusive = true }
+
+                        }
                     }
                 )
                 BottomNavigationItem(
@@ -54,7 +57,10 @@ fun BottomNavigationBar(navController: NavController) {
                     },
                     selected = false,
                     onClick = {
-                        navController.navigate("explore")
+                        navController.navigate("explore"){
+                            popUpTo(0) { inclusive = true }
+                        }
+
                     }
                 )
                 BottomNavigationItem(
@@ -66,7 +72,10 @@ fun BottomNavigationBar(navController: NavController) {
                     },
                     selected = false,
                     onClick = {
-                        navController.navigate("food")
+                        navController.navigate("food"){
+                            popUpTo(0) { inclusive = true }
+
+                        }
                     }
                 )
                 BottomNavigationItem(
@@ -78,7 +87,10 @@ fun BottomNavigationBar(navController: NavController) {
                     },
                     selected = false,
                     onClick = {
-                        navController.navigate("setting")
+                        navController.navigate("setting_screen"){
+                            popUpTo(0) { inclusive = true }
+
+                        }
                     }
                 )
                 BottomNavigationItem(
@@ -90,7 +102,11 @@ fun BottomNavigationBar(navController: NavController) {
                     },
                     selected = false,
                     onClick = {
-                        navController.navigate("profile")
+                        navController.navigate("profile"){
+                            popUpTo(0) { inclusive = true }
+
+                        }
+
                     }
                 )
             }

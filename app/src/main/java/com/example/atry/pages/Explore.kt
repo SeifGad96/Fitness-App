@@ -1,5 +1,6 @@
 package com.example.atry.pages
 
+import Back_Handler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -88,6 +89,7 @@ fun Explore(modifier: Modifier = Modifier, navController: NavController) {
         ChallengeList(navController, challenges)
     }
     BottomNavigationBar(navController)
+    Back_Handler()
 }
 
 @Composable

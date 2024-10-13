@@ -1,21 +1,33 @@
 package com.example.atry.viewmodel
 
+import android.content.ContentValues.TAG
+import android.content.Context
+import android.net.Uri
+import android.service.autofill.UserData
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.auth.User
+import com.google.firebase.ktx.Firebase
+import java.util.concurrent.Future
 
 class AuthViewModel : ViewModel() {
 
-
+    private val _userData = MutableLiveData<UserData>()
+    val userData: LiveData<UserData> get() = _userData
     private var username by mutableStateOf("")
 
     fun updateUsername(newUsername: String) {
@@ -132,7 +144,85 @@ class AuthViewModel : ViewModel() {
             _toastMessage.postValue("User not logged in")
         }
     }
+
+    fun getUserData() {
+        val user = auth.currentUser
+        user?.let {
+            firestore.collection("users").document(user.uid)
+                .get() // Retrieve the document for the current user
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        // Extract the data from the document
+                        val weight = documentSnapshot.getLong("weight")?.toInt()
+                        val height = documentSnapshot.getDouble("height")?.toFloat()
+                        val age = documentSnapshot.getLong("age")?.toInt()
+                        val gender = documentSnapshot.getLong("gender")?.toInt()
+                        val bmi = documentSnapshot.getString("bmi")
+
+                        // Use the data (for example, update the UI or store it in the ViewModel)
+                        _toastMessage.postValue("User data retrieved successfully")
+                        // Example: You could assign these values to LiveData or some state variable
+                        _userData.postValue(UserData(weight, height, age, gender, bmi))
+                    } else {
+                        _toastMessage.postValue("No user data found")
+                    }
+                }
+                .addOnFailureListener { e ->
+                    _toastMessage.postValue("Error retrieving user data: ${e.message}")
+                }
+        } ?: run {
+            _toastMessage.postValue("User not logged in")
+        }
+    }
+
     fun clearToastMessage() {
         _toastMessage.postValue(null) // Clears the current toast message
     }
+
+    fun updateName(name:String){
+        val user = Firebase.auth.currentUser
+
+        val profileUpdates = userProfileChangeRequest {
+            displayName = name
+            //photoUri = Uri.parse("https://example.com/jane-q-user/profile.jpg")
+        }
+
+        user!!.updateProfile(profileUpdates)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d(TAG, "User profile updated.")
+                }
+            }
+    }
+
+    fun updatePassword(context: Context, newPassword: String) {
+        val user = auth.currentUser
+        if (user == null) {
+            Log.e("UpdatePassword", "User not logged in")
+            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        Log.d("UpdatePassword", "Attempting to update password for user: ${user.email}")
+
+        user.updatePassword(newPassword)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("UpdatePassword", "Password updated successfully")
+                    Toast.makeText(context, "Password updated successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.e("UpdatePassword", " Login again before retrying this request.")
+                    Toast.makeText(context, "Error updating password", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+
+    data class UserData(
+        val weight: Int?,
+        val height: Float?,
+        val age: Int?,
+        val gender: Int?,
+        val bmi: String?
+    )
 }

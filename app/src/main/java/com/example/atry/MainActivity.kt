@@ -8,9 +8,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.atry.Setting.DetailScreen
+import com.example.atry.Setting.EditProfile
+import com.example.atry.Setting.Notification
+import com.example.atry.Setting.Setting
+import com.example.atry.Setting.SettingsList
 import com.example.atry.pages.Calculator
 import com.example.atry.pages.ChallengeDetailsScreen
 import com.example.atry.pages.ExerciseDetails
@@ -19,7 +25,6 @@ import com.example.atry.pages.Food
 import com.example.atry.pages.Home
 import com.example.atry.pages.Login
 import com.example.atry.pages.QuarantineWorkout
-import com.example.atry.pages.Setting
 import com.example.atry.pages.ShowView
 import com.example.atry.pages.SignUp
 import com.example.atry.pages.UserProfile
@@ -55,9 +60,11 @@ fun AppNavigation(
 ) {
     val navController = rememberNavController()
 
+    val context= LocalContext.current
     NavHost(navController = navController, startDestination = "login") {
         composable("login") {
             Login(modifier, navController, authViewModel)
+
         }
         composable("sign_up") {
             SignUp(modifier, navController, authViewModel)
@@ -75,7 +82,8 @@ fun AppNavigation(
             Food()
         }
         composable("setting") {
-            Setting(navController , authViewModel)
+            Setting( authViewModel)
+
         }
         composable("exercise_details/{exerciseId}") { backStackEntry ->
             val exerciseId = backStackEntry.arguments?.getString("exerciseId")
@@ -85,7 +93,7 @@ fun AppNavigation(
             )
         }
         composable("calculator") {
-            Calculator(modifier, navController, authViewModel)
+            Calculator( navController, authViewModel)
         }
         composable("result_bmi/{bmi}") { backStackEntry ->
             val bmi = backStackEntry.arguments?.getString("bmi")
@@ -101,6 +109,18 @@ fun AppNavigation(
         composable("workout_categories_screen/{workoutCategoryName}") { backStackEntry ->
             val workoutCategoryName = backStackEntry.arguments?.getString("workoutCategoryName")
             WorkoutCategoriesScreen(workoutCategoryName ?: "", modifier, exercisesViewModel,navController)
+        }
+
+        //////////////////////////////
+        composable("setting_screen") { SettingsList(navController, authViewModel) }
+        composable("edit") { EditProfile(authViewModel,context,navController) }
+        composable("notification") { Notification() }
+        composable("changePassword") { DetailScreen("Change_Password", context) }
+        composable("logout") {
+            Login(
+                navController = navController,
+                authViewModel = AuthViewModel()
+            )
         }
     }
 }
