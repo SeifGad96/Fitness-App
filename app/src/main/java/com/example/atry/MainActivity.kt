@@ -18,17 +18,17 @@ import com.example.atry.Setting.Notification
 import com.example.atry.Setting.Setting
 import com.example.atry.Setting.SettingsList
 import com.example.atry.pages.Calculator
-import com.example.atry.pages.ChallengeDetailsScreen
+import com.example.atry.explore.ChallengeDetailsScreen
 import com.example.atry.pages.ExerciseDetails
-import com.example.atry.pages.Explore
-import com.example.atry.pages.Food
+import com.example.atry.explore.Explore
 import com.example.atry.pages.Home
 import com.example.atry.pages.Login
-import com.example.atry.pages.QuarantineWorkout
+import com.example.atry.explore.QuarantineWorkout
 import com.example.atry.pages.ShowView
 import com.example.atry.pages.SignUp
 import com.example.atry.pages.UserProfile
-import com.example.atry.pages.WorkoutCategoriesScreen
+import com.example.atry.explore.WorkoutCategoriesScreen
+import com.example.atry.pages.HealthyFoodPage
 import com.example.atry.ui.theme.TryTheme
 import com.example.atry.viewmodel.AuthViewModel
 import com.example.atry.viewmodel.ExercisesViewModel
@@ -79,7 +79,7 @@ fun AppNavigation(
             UserProfile()
         }
         composable("food") {
-            Food()
+            HealthyFoodPage(modifier,navController)
         }
         composable("setting") {
             Setting( authViewModel)
@@ -100,7 +100,7 @@ fun AppNavigation(
             ShowView(value = bmi, navController = navController)
         }
         composable("quarantine_workout") {
-            QuarantineWorkout()
+            QuarantineWorkout(modifier)
         }
         composable("challenge_details/{challengeName}") { backStackEntry ->
             val challengeName = backStackEntry.arguments?.getString("challengeName")

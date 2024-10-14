@@ -1,6 +1,7 @@
 package com.example.atry.viewmodel
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.atry.api.Exercise
@@ -36,6 +37,14 @@ class ExercisesViewModel:ViewModel() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    // Method to delete all exercises
+    fun deleteAllExercises() {
+        viewModelScope.launch {
+            // Clear the list of exercises
+            _exercises.value = emptyList()
         }
     }
 }

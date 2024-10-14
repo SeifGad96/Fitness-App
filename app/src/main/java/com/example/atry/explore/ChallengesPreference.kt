@@ -1,4 +1,4 @@
-package com.example.atry.pages
+package com.example.atry.explore
 
 import android.content.Context
 import androidx.datastore.preferences.core.*

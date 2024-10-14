@@ -99,7 +99,7 @@ fun ExerciseItem(exercise: Exercise,navController: NavController) {
                 Text(
                     text = "See more",
                     fontSize = 12.sp,
-                    color = Color.White,
+                    color = Color.Black,
                     modifier = Modifier.padding(end = 4.dp)
                 )
                 Image(

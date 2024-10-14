@@ -1,4 +1,4 @@
-package com.example.atry.pages
+package com.example.atry.explore
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,7 +11,7 @@ fun WorkoutCategoriesScreen(workoutCategoryName: String,modifier: Modifier,exerc
         "Yoga" -> YogaExercises(modifier)
         "Body Building" -> BodyBuilding(modifier,exercisesViewModel, navController)
         "Cardio" -> CardioExercises(modifier,exercisesViewModel,navController)
-        "Stretching" -> StretchingExercises()
+        "Stretching" -> StretchingExercises(modifier = modifier)
     }
 
 }

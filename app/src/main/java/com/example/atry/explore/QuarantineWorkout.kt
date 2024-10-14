@@ -1,4 +1,4 @@
-package com.example.atry.pages
+package com.example.atry.explore
 
 import android.content.Intent
 import androidx.compose.foundation.Image
@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -31,76 +32,76 @@ import androidx.core.net.toUri
 import com.example.atry.R
 
 @Composable
-fun YogaExercises(modifier: Modifier = Modifier) {
-    val yogaExercises = listOf(
-        YogaExercise(
-            "meditation pose",
-            R.drawable.lotus_pose,
-            "https://www.artofliving.org/us-en/meditation/how-to/meditation-positions",
-            "10 to 15 minutes"
+fun QuarantineWorkout(modifier: Modifier) {
+    val quarantineExercises = listOf(
+        QuarantineExercise(
+            "Push-Ups",
+            R.drawable.push_ups,
+            "https://www.verywellfit.com/the-push-up-exercise-3120574"
         ),
-        YogaExercise(
-            "warrior pose",
-            R.drawable.warior_pose,
-            "https://www.arhantayoga.org/blog/yoga-warrior-pose-guide/",
-            "1 to 5 minutes"
+        QuarantineExercise(
+            "Squats",
+            R.drawable.squatss,
+            "https://www.healthline.com/health/exercise-fitness/squats-benefits"
         ),
-        YogaExercise(
-            "child pose",
-            R.drawable.child_pose,
-            "https://www.yogabasics.com/asana/child/",
-            "2 to 8 minutes"
+        QuarantineExercise(
+            "Mountain Climbers",
+            R.drawable.mountain_climber,
+            "https://www.verywellfit.com/mountain-climbers-exercise-3966947"
         ),
-        YogaExercise(
-            "bow pose",
-            R.drawable.bow_pose,
-            "https://www.artofliving.org/in-en/yoga/yoga-poses/dhanurasana-bow-pose",
-            "1 to 5 minutes"
+        QuarantineExercise(
+            "Triceps Dips",
+            R.drawable.triceps,
+            "https://www.verywellfit.com/the-chair-dip-triceps-exercise-3120734"
         ),
-        YogaExercise(
-            "eagle pose",
-            R.drawable.eagle_pose,
-            "https://www.ekhartyoga.com/resources/yoga-poses/eagle-pose",
-            "1 to 3 minutes"
+        QuarantineExercise(
+            "Bicycle Crunches",
+            R.drawable.bicycle_crunches,
+            "https://www.verywellfit.com/bicycle-crunch-exercise-3120058"
         ),
-        YogaExercise(
-            "fish pose",
-            R.drawable.fish_pose,
-            "https://www.yogajournal.com/poses/fish-pose/",
-            "5 to 10 minutes"
+        QuarantineExercise(
+            "Lunges (each leg)",
+            R.drawable.lunges_each_leg,
+            "https://barbend.com/lunge/"
         ),
-        YogaExercise(
-            "pigeon pose",
-            R.drawable.pigeon_pose,
-            "https://jasonyoga.com/2016/06/27/eka-pada-rajakapotasana/",
-            "1 to 5 minutes"
+        QuarantineExercise(
+            "High Knees",
+            R.drawable.high_knees,
+            "https://www.healthline.com/health/fitness/high-knees-benefits"
         ),
-        YogaExercise(
-            "half moon pose",
-            R.drawable.half_moon_pose,
-            "https://www.yogajournal.com/poses/half-moon-pose-3/",
-            "1 to 3 minutes"
-        ),
-        YogaExercise(
-            "seated forward pose",
-            R.drawable.seated_forwar_pose,
-            "https://www.ekhartyoga.com/resources/yoga-poses/seated-forward-bend",
-            "2 to 8 minutes"
-        ),
+        QuarantineExercise(
+            "Jumping Jacks",
+            R.drawable.jumping_jacks,
+            "https://www.healthline.com/health/fitness-exercise/jumping-jacks"
+        )
     )
 
-    LazyColumn(
+    Column(
         modifier = modifier
             .fillMaxSize()
+            .padding(12.dp)
     ) {
-        items(yogaExercises) { yogaExercise ->
-            YogaExerciseItem(modifier = modifier, yogaExercise = yogaExercise)
+        Text(
+            text = "Best Quarantine Workout:",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+        )
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            items(quarantineExercises) { quarantineExercise ->
+                QuarantineWorkoutItem(quarantineExercise)
+            }
         }
     }
+
 }
 
+
 @Composable
-fun YogaExerciseItem(modifier: Modifier = Modifier, yogaExercise: YogaExercise) {
+fun QuarantineWorkoutItem(exercise: QuarantineExercise) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -111,23 +112,24 @@ fun YogaExerciseItem(modifier: Modifier = Modifier, yogaExercise: YogaExercise) 
             elevation = CardDefaults.cardElevation(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(120.dp)
+                .height(140.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxSize()
             ) {
                 Image(
-                    painter = painterResource(yogaExercise.image),
+                    painter = painterResource(exercise.image),
                     contentDescription = "meditation pose",
+                    contentScale = ContentScale.FillBounds,
                     modifier = Modifier
-                        .size(100.dp, 120.dp)
+                        .size(140.dp, 140.dp)
                 )
                 Column(
                     modifier = Modifier
                         .padding(start = 8.dp)
                 ) {
                     Text(
-                        text = yogaExercise.name,
+                        text = exercise.name,
                         fontSize = 28.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier
@@ -135,8 +137,10 @@ fun YogaExerciseItem(modifier: Modifier = Modifier, yogaExercise: YogaExercise) 
 
                     )
                     Text(
-                        text = "${yogaExercise.time}",
+                        text = "3 sets of 10-15 reps",
                         fontSize = 16.sp,
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
                     )
                 }
             }
@@ -153,7 +157,7 @@ fun YogaExerciseItem(modifier: Modifier = Modifier, yogaExercise: YogaExercise) 
             ) {
                 pushStringAnnotation(
                     "link_tag",
-                    yogaExercise.link
+                    exercise.url
                 )
                 append("Click here!")
                 pop()
@@ -176,9 +180,8 @@ fun YogaExerciseItem(modifier: Modifier = Modifier, yogaExercise: YogaExercise) 
     }
 }
 
-data class YogaExercise(val name: String, val image: Int, val link: String, val time: String)
-
-
-
-
-
+data class QuarantineExercise(
+    val name: String,
+    val image: Int,
+    val url: String
+)

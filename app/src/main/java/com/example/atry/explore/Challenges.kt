@@ -1,12 +1,10 @@
-package com.example.atry.pages
+package com.example.atry.explore
 
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
@@ -76,8 +74,7 @@ fun PlankChallenge() {
             text = "Instructions: \n\n" +
                     "1. Get into a push-up position with your elbows bent at 90 degrees and rest your weight on your forearms.\n" +
                     "2. Keep your body in a straight line from head to heels, making sure your core is engaged.\n" +
-                    "3. Hold this position without letting your hips drop or rise.\n" +
-                    "4. Try to hold this position for the set duration ($timeLimit seconds) without moving.",
+                    "3. Hold this position without letting your hips drop or rise.\n",
             fontSize = 16.sp,
             modifier = Modifier.padding(bottom = 24.dp)
         )
@@ -199,9 +196,7 @@ fun SpiritChallenge() {
         Text(
             text = "Instructions: \n\n" +
                     "1. Find a safe area to run.\n" +
-                    "2. Start running at a comfortable pace.\n" +
-                    "3. Try to run continuously for the set time ($timeLimit seconds).\n" +
-                    "4. You can set a timer or use a running app to track your time.",
+                    "2. Start running at a comfortable pace.\n",
             fontSize = 16.sp,
             modifier = Modifier.padding(bottom = 24.dp)
         )
@@ -313,7 +308,7 @@ fun ChallengeCompletionDialog(
                     onClick = {
                         Toast.makeText(
                             context,
-                            "Challenge not completed on time. Try again!",
+                            "Keep going, you’ve got this!",
                             Toast.LENGTH_SHORT
                         ).show()
                         onDismiss()
@@ -375,8 +370,7 @@ fun SquatChallenge() {
             text = "Instructions: \n\n" +
                     "1. Stand with your feet shoulder-width apart and your arms extended straight forward.\n" +
                     "2. Slowly bend your knees and lower your body into a squat position, keeping your back straight and core engaged.\n" +
-                    "3. Push through your heels to return to the starting position.\n" +
-                    "4. Perform $reps reps within the set time ($timeLimit seconds).",
+                    "3. Push through your heels to return to the starting position.\n",
             fontSize = 16.sp,
             modifier = Modifier.padding(bottom = 24.dp)
         )

@@ -1,4 +1,4 @@
-package com.example.atry.pages
+package com.example.atry.explore
 
 import androidx.compose.runtime.Composable
 
