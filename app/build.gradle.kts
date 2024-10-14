@@ -99,7 +99,8 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation ("com.google.firebase:firebase-firestore:24.4.2")
-
+    // Coil for image loading in Compose
+    implementation ("io.coil-kt:coil-compose:2.2.2")
     implementation ("androidx.compose.material:material:1.4.0")
     implementation ("androidx.compose.ui:ui-tooling-preview:1.4.0")
     implementation ("androidx.compose.runtime:runtime-livedata:1.4.0")

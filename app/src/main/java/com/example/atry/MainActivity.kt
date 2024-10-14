@@ -76,7 +76,7 @@ fun AppNavigation(
             Explore(modifier, navController)
         }
         composable("profile") {
-            UserProfile()
+            UserProfile(navController)
         }
         composable("food") {
             HealthyFoodPage(modifier,navController)
