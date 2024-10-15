@@ -11,7 +11,7 @@ import retrofit2.http.Query
 interface ExerciseApiService {
     @Headers(
         "x-rapidapi-host: exercisedb.p.rapidapi.com",
-        "x-rapidapi-key: b9a9e6a395msh93f083e9a88bcadp17f334jsn2cf46ab896f5"
+        "x-rapidapi-key: 093bce7cd8mshe54f72b3506a132p1146d5jsn53a1482b36ec"
     )
     @GET("exercises/bodyPart/{bodyPart}")
     suspend fun getExercisesByBodyPart(
@@ -22,7 +22,7 @@ interface ExerciseApiService {
 
     @Headers(
         "x-rapidapi-host: exercisedb.p.rapidapi.com",
-        "x-rapidapi-key: b9a9e6a395msh93f083e9a88bcadp17f334jsn2cf46ab896f5"
+        "x-rapidapi-key: 093bce7cd8mshe54f72b3506a132p1146d5jsn53a1482b36ec"
     )
     @GET("exercises/exercise/{id}")
     suspend fun getExerciseById(

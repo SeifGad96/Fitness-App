@@ -33,9 +33,14 @@ class AuthViewModel : ViewModel() {
     fun updateUsername(newUsername: String) {
         username = newUsername
     }
+    private val _signUpSuccess = MutableLiveData<Boolean>(false)
+    val signUpSuccess: LiveData<Boolean> get() = _signUpSuccess
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    val _isUserDataMissing = MutableLiveData<Boolean>(false)
+    val isUserDataMissing: LiveData<Boolean> get() = _isUserDataMissing
 
     private val _firebaseUser = MutableLiveData<FirebaseUser?>()
     val firebaseUser: LiveData<FirebaseUser?> get() = _firebaseUser

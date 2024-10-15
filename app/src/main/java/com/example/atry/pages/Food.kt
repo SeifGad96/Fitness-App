@@ -74,7 +74,7 @@ fun HealthyFoodPage(modifier: Modifier = Modifier,navController: NavController) 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.secondary) // Set secondary color (white) as background
+            //.background(MaterialTheme.colorScheme.secondary) // Set secondary color (white) as background
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -96,7 +96,7 @@ fun MealItem(meal: Meal) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.secondary) // Background with secondary color (white)
+            //.background(MaterialTheme.colorScheme.secondary) // Background with secondary color (white)
             .padding(8.dp)
     ) {
         // Meal Image

@@ -1,7 +1,9 @@
 package com.example.atry.pages
 
 import Back_Handler
+import android.content.Context
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
@@ -45,18 +48,23 @@ import com.example.atry.viewmodel.ExercisesViewModel
 fun Home(
     navController: NavController,
     exercisesViewModel: ExercisesViewModel,
+    //selectedExercises: List<Exercise>,
     authViewModel: AuthViewModel = viewModel()
     ) {
     val exercises by exercisesViewModel.exercises.collectAsState()
     var selectedBodyPart by remember { mutableStateOf("back") }
+    var selectedExercises by remember { mutableStateOf<List<Exercise>>(emptyList()) }
 
     val firebaseUser by authViewModel.firebaseUser.observeAsState()
     val username = firebaseUser?.displayName ?: "Guest"
 
+    val sharedPref = LocalContext.current.getSharedPreferences("user_preferences", Context.MODE_PRIVATE)
+    val selectedExerciseIds = sharedPref.getStringSet("selected_exercises", mutableSetOf()) ?: mutableSetOf()
+
     LaunchedEffect(selectedBodyPart, Unit) {
         exercisesViewModel.fetchExercises(selectedBodyPart, limit = 10, offset = 0)
     }
-
+    val selectedExercisesList = exercises.filter { exercise -> selectedExerciseIds.contains(exercise.id) }
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -64,8 +72,25 @@ fun Home(
                 .padding(16.dp)
         ) {
             if (exercises.isEmpty()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+
+                    ) {
+                        CircularProgressIndicator()
+                        Text(
+                            text = "Loading..."
+                        )
+                    }
+                }
+                } else {
                 Text(
                     text = "Hello $username",
                     style = MaterialTheme.typography.headlineMedium,
@@ -95,18 +120,23 @@ fun Home(
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
+                if (selectedExercisesList.isEmpty()) {
+                    Text(text = "No exercises selected yet", modifier = Modifier.padding(16.dp))
+                }
+                else{
+                    LazyColumn(modifier = Modifier.clickable {
+                        navController.navigate("exercise_details")
+                    }) {
+                        items(selectedExercisesList) { exercise ->
+                            TodayPlanItem(
+                                exercise
+                            ) {
+                                navController.navigate("exercise_details/${exercise.id}")
 
-                LazyColumn(modifier = Modifier.clickable {
-                    navController.navigate("exercise_details")
-                }) {
-                    items(exercises) { exercise ->
-                        TodayPlanItem(
-                            exercise
-                        ) {
-                            navController.navigate("exercise_details/${exercise.id}")
-
+                            }
                         }
                     }
+
                 }
 
 
@@ -124,7 +154,10 @@ fun WorkoutCard(exercise: Exercise, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier
             .padding(8.dp)
-            .size(200.dp)
+            .size(200.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
     ) {
         Column(
             modifier = Modifier
@@ -154,7 +187,10 @@ fun TodayPlanItem(exercise:Exercise, onClick: () -> Unit) {
 
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier.padding(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

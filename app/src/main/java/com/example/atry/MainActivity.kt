@@ -17,6 +17,7 @@ import com.example.atry.Setting.EditProfile
 import com.example.atry.Setting.Notification
 import com.example.atry.Setting.Setting
 import com.example.atry.Setting.SettingsList
+import com.example.atry.api.Exercise
 import com.example.atry.pages.Calculator
 import com.example.atry.explore.ChallengeDetailsScreen
 import com.example.atry.pages.ExerciseDetails
@@ -29,6 +30,7 @@ import com.example.atry.pages.SignUp
 import com.example.atry.pages.UserProfile
 import com.example.atry.explore.WorkoutCategoriesScreen
 import com.example.atry.pages.HealthyFoodPage
+import com.example.atry.pages.SplashScreen
 import com.example.atry.ui.theme.TryTheme
 import com.example.atry.viewmodel.AuthViewModel
 import com.example.atry.viewmodel.ExercisesViewModel
@@ -59,12 +61,16 @@ fun AppNavigation(
     exercisesViewModel: ExercisesViewModel
 ) {
     val navController = rememberNavController()
-
+    val selectedExercises = remember { mutableStateListOf<Exercise>() }
     val context= LocalContext.current
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = "launching_screen") {
+
         composable("login") {
             Login(modifier, navController, authViewModel)
 
+        }
+        composable("launching_screen") {
+            SplashScreen(navController, authViewModel)
         }
         composable("sign_up") {
             SignUp(modifier, navController, authViewModel)
@@ -89,8 +95,10 @@ fun AppNavigation(
             val exerciseId = backStackEntry.arguments?.getString("exerciseId")
             ExerciseDetails(
                 exerciseId = exerciseId ?: "",
-                exercisesViewModel = exercisesViewModel
-            )
+                exercisesViewModel = exercisesViewModel){ selectedExercise ->
+                selectedExercises.add(selectedExercise)
+                navController.popBackStack()
+            }
         }
         composable("calculator") {
             Calculator( navController, authViewModel)
