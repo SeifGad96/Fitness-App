@@ -40,7 +40,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -53,17 +55,34 @@ import com.example.atry.viewmodel.AuthViewModel
 fun UserProfile(navController: NavController) {
     val authViewModel: AuthViewModel = viewModel()
     val notification = rememberSaveable { mutableStateOf("") }
+    val userData by authViewModel.userData.observeAsState()
+
+    // Fetch user data when the Composable is loaded
+    LaunchedEffect(Unit) {
+        authViewModel.getUserData()
+    }
 
     if (notification.value.isNotEmpty()) {
         Toast.makeText(LocalContext.current, notification.value, Toast.LENGTH_LONG).show()
         notification.value = ""
     }
 
-    var weight by rememberSaveable { mutableStateOf("0") }
-    var height by rememberSaveable { mutableStateOf("0.0") }
-    var age by rememberSaveable { mutableStateOf("0") }
-    var gender by rememberSaveable { mutableStateOf("0") }
-    var bmi by rememberSaveable { mutableStateOf("0.0") }
+    var weight by rememberSaveable { mutableStateOf(userData?.weight?.toString() ?: "") }
+    var height by rememberSaveable { mutableStateOf(userData?.height?.toString() ?: "") }
+    var age by rememberSaveable { mutableStateOf(userData?.age?.toString() ?: "") }
+    var gender by rememberSaveable { mutableStateOf(userData?.gender?.toString() ?: "") }
+    var bmi by rememberSaveable { mutableStateOf(userData?.bmi ?: "") }
+
+    // Update UI when userData changes
+    LaunchedEffect(userData) {
+        userData?.let {
+            weight = it.weight?.toString() ?: ""
+            height = it.height?.toString() ?: ""
+            age = it.age?.toString() ?: ""
+            gender = it.gender?.toString() ?: ""
+            bmi = it.bmi ?: ""
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -79,11 +98,11 @@ fun UserProfile(navController: NavController) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "cancel",
-                    modifier = Modifier.clickable { notification.value = "cancelled" }
+                    text = "Cancel",
+                    modifier = Modifier.clickable { notification.value = "Cancelled" }
                 )
                 Text(
-                    text = "save",
+                    text = "Save",
                     modifier = Modifier.clickable {
                         val weightValue = weight.toIntOrNull() ?: 0
                         val heightValue = height.toFloatOrNull() ?: 0.0f
@@ -190,6 +209,8 @@ fun UserProfile(navController: NavController) {
     }
 }
 
+
+
 @Composable
 fun ProfileImage() {
     val imageUri = rememberSaveable { mutableStateOf("") }
@@ -201,7 +222,7 @@ fun ProfileImage() {
     )
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()
     ) {
-        uri: Uri? ->
+            uri: Uri? ->
         uri?.let { imageUri.value = it.toString() }
     }
 

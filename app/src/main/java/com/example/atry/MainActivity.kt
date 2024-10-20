@@ -95,9 +95,10 @@ fun AppNavigation(
             val exerciseId = backStackEntry.arguments?.getString("exerciseId")
             ExerciseDetails(
                 exerciseId = exerciseId ?: "",
-                exercisesViewModel = exercisesViewModel
-            )
-
+                exercisesViewModel = exercisesViewModel){ selectedExercise ->
+                selectedExercises.add(selectedExercise)
+                navController.popBackStack()
+            }
         }
         composable("calculator") {
             Calculator( navController, authViewModel)
