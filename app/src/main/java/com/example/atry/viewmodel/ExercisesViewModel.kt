@@ -40,6 +40,12 @@ class ExercisesViewModel:ViewModel() {
         }
     }
 
+    fun deleteExercise() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _exerciseDetails.value = null
+        }
+    }
+
     // Method to delete all exercises
     fun deleteAllExercises() {
         viewModelScope.launch {
