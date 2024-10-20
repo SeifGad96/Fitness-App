@@ -1,7 +1,7 @@
 package com.example.atry.pages
 
+import android.graphics.Color.rgb
 import android.widget.Toast
-import com.example.atry.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,6 +55,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.atry.R
 import com.example.atry.viewmodel.AuthViewModel
 
 @Composable
@@ -66,10 +68,11 @@ fun SignUp(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val toastMessage by authViewModel._toastMessage.observeAsState()
-    val signUpSuccess by authViewModel.signUpSuccess.observeAsState(false) // Observe sign-up success
+    val signUpSuccess by authViewModel.signUpSuccess.observeAsState(false)
 
     toastMessage?.let { message ->
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -96,10 +99,18 @@ fun SignUp(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "App Logo",
+                modifier = Modifier.size(70.dp)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             Text(
                 text = "Create an Account",
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
+                color = Color(rgb(191, 64, 191)),
                 fontWeight = FontWeight.Bold
             )
 
@@ -108,7 +119,7 @@ fun SignUp(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 elevation = CardDefaults.cardElevation(6.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                colors = CardDefaults.cardColors(containerColor = Color(rgb(203, 195, 227)))
             ) {
                 Column(
                     modifier = Modifier
@@ -169,6 +180,7 @@ fun SignUp(
 
             Button(
                 onClick = {
+                    isLoading = true
                     if (email.isNotEmpty() && password.isNotEmpty()) {
                         authViewModel.signUp(email, password, username)
                     } else {
@@ -177,9 +189,14 @@ fun SignUp(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                enabled = !isLoading,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(rgb(200, 140, 255))),
             ) {
-                Text(text = "Sign Up", style = MaterialTheme.typography.bodyLarge)
+                if (isLoading) {
+                    CircularProgressIndicator(color = Color.White)
+                } else {
+                    Text(text = "Sign Up", style = MaterialTheme.typography.bodyLarge)
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -208,3 +225,17 @@ fun SignUp(
         }
     }
 }
+
+
+
+
+/*@Preview(showSystemUi = true)
+@Composable
+fun SignUpPreview() {
+    SignUp(
+        modifier = Modifier,
+        navController = rememberNavController(),
+        authViewModel = AuthViewModel()
+    )
+}*/
+

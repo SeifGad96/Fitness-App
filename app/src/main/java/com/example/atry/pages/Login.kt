@@ -1,4 +1,6 @@
 package com.example.atry.pages
+
+import android.graphics.Color.rgb
 import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.animation.core.Animatable
@@ -65,22 +67,25 @@ fun Login(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    val firebaseUser by authViewModel.firebaseUser.observeAsState()
 
     val context = LocalContext.current
     val toastMessage by authViewModel._toastMessage.observeAsState()
     var emailError by remember { mutableStateOf(false) }
-    val scale = remember { Animatable(1f) }
     var isLoading by remember { mutableStateOf(false) }
-
-    val primaryColor = MaterialTheme.colorScheme.primary
-    val secondaryColor = MaterialTheme.colorScheme.secondary
-    val surfaceColor = MaterialTheme.colorScheme.surface
-    val backgroundColor = MaterialTheme.colorScheme.background
-    val errorColor = MaterialTheme.colorScheme.error
 
     toastMessage?.let { message ->
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         authViewModel.clearToastMessage()
+    }
+
+    LaunchedEffect(firebaseUser) {
+        firebaseUser?.let {
+            navController.navigate("home") {
+                popUpTo("login") { inclusive = true }
+            }
+            isLoading = false
+        }
     }
 
     Box(
@@ -96,18 +101,18 @@ fun Login(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-//            Image(
-//                painter = painterResource(id = R.drawable.logo),
-//                contentDescription = "App Logo",
-//                modifier = Modifier.size(70.dp)
-//            )
-//
-//            Spacer(modifier = Modifier.height(24.dp))
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "App Logo",
+                modifier = Modifier.size(70.dp)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 text = "Welcome Back!",
                 style = MaterialTheme.typography.headlineMedium,
-                color = primaryColor,
+                color = Color(rgb(191, 64, 191)),
                 fontWeight = FontWeight.Bold
             )
 
@@ -116,7 +121,7 @@ fun Login(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 elevation = CardDefaults.cardElevation(6.dp),
-                colors = CardDefaults.cardColors(containerColor = surfaceColor)
+                colors = CardDefaults.cardColors(containerColor = Color(rgb(203, 195, 227)))
             ) {
                 Column(
                     modifier = Modifier
@@ -149,7 +154,6 @@ fun Login(
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
-
 
                     OutlinedTextField(
                         value = password,
@@ -185,7 +189,7 @@ fun Login(
                                     Toast.makeText(context, "Please enter your email", Toast.LENGTH_SHORT).show()
                                 }
                             },
-                        color = primaryColor,
+                        color = Color(rgb(191, 64, 191)),
                         textDecoration = TextDecoration.Underline
                     )
                 }
@@ -198,8 +202,6 @@ fun Login(
                     isLoading = true
                     if (email.isNotEmpty() && password.isNotEmpty()) {
                         authViewModel.logIn(email, password)
-                        navController.navigate("home")
-
                     } else {
                         Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
                     }
@@ -207,7 +209,7 @@ fun Login(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 enabled = !isLoading,
-                colors = ButtonDefaults.buttonColors(containerColor = primaryColor)
+                colors = ButtonDefaults.buttonColors(containerColor = Color(rgb(200, 140, 255)))
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(color = Color.White)
@@ -237,13 +239,12 @@ fun Login(
                         popUpTo("login") { inclusive = true }
                     }
                 },
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color(rgb(191, 64, 191))
             )
         }
     }
 }
-
-
 
 
 /*@Preview(showBackground = true)

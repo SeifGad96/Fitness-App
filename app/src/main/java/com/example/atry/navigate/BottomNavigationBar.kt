@@ -17,7 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.atry.R
-
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -33,18 +32,20 @@ fun BottomNavigationBar(navController: NavController) {
             BottomNavigation(
                 modifier = Modifier.background(color = Color.Blue)
             ) {
+                val currentRoute = navController.currentDestination?.route
+
                 BottomNavigationItem(
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_home),
-                            contentDescription = "Home"
+                            contentDescription = "Home",
+                            tint = if (currentRoute == "home") Color.White else Color.Gray
                         )
                     },
-                    selected = true,
+                    selected = currentRoute == "home",
                     onClick = {
-                        navController.navigate("home"){
+                        navController.navigate("home") {
                             popUpTo(0) { inclusive = true }
-
                         }
                     }
                 )
@@ -52,29 +53,29 @@ fun BottomNavigationBar(navController: NavController) {
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_explore),
-                            contentDescription = "Explore"
+                            contentDescription = "Explore",
+                            tint = if (currentRoute == "explore") Color.White else Color.Gray
                         )
                     },
-                    selected = false,
+                    selected = currentRoute == "explore",
                     onClick = {
-                        navController.navigate("explore"){
+                        navController.navigate("explore") {
                             popUpTo(0) { inclusive = true }
                         }
-
                     }
                 )
                 BottomNavigationItem(
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_food_bank_24),
-                            contentDescription = "Food"
+                            contentDescription = "Food",
+                            tint = if (currentRoute == "food") Color.White else Color.Gray
                         )
                     },
-                    selected = false,
+                    selected = currentRoute == "food",
                     onClick = {
-                        navController.navigate("food"){
+                        navController.navigate("food") {
                             popUpTo(0) { inclusive = true }
-
                         }
                     }
                 )
@@ -82,14 +83,14 @@ fun BottomNavigationBar(navController: NavController) {
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_settings),
-                            contentDescription = "Setting"
+                            contentDescription = "Setting",
+                            tint = if (currentRoute == "setting_screen") Color.White else Color.Gray
                         )
                     },
-                    selected = false,
+                    selected = currentRoute == "setting_screen",
                     onClick = {
-                        navController.navigate("setting_screen"){
+                        navController.navigate("setting_screen") {
                             popUpTo(0) { inclusive = true }
-
                         }
                     }
                 )
@@ -97,20 +98,18 @@ fun BottomNavigationBar(navController: NavController) {
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_person),
-                            contentDescription = "User Profile"
+                            contentDescription = "User Profile",
+                            tint = if (currentRoute == "profile") Color.White else Color.Gray
                         )
                     },
-                    selected = false,
+                    selected = currentRoute == "profile",
                     onClick = {
-                        navController.navigate("profile"){
+                        navController.navigate("profile") {
                             popUpTo(0) { inclusive = true }
-
                         }
-
                     }
                 )
             }
         }
     }
-
 }
