@@ -2,6 +2,7 @@ package com.example.atry.pages
 
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,6 +31,7 @@ import com.example.atry.viewmodel.ExercisesViewModel
 fun ExerciseDetails(
     exerciseId: String, exercisesViewModel: ExercisesViewModel
 ) {
+    val context=LocalContext.current
     val exercise by exercisesViewModel.exerciseDetails.collectAsState()
     LaunchedEffect(exerciseId) {
         exercisesViewModel.fetchExerciseById(exerciseId)
@@ -93,9 +95,12 @@ fun ExerciseDetails(
                     onClick = {
                         if(isSelected){
                             selectedExercises?.remove(exerciseData.id)
+                            Toast.makeText(context, "Exercise removed successfully", Toast.LENGTH_SHORT).show()
+
                         }
                         else{
                             selectedExercises?.add(exerciseData.id)
+                            Toast.makeText(context, "Exercise added successfully", Toast.LENGTH_SHORT).show()
                         }
                         editor.putStringSet("selected_exercises", selectedExercises)
                         editor.apply()
