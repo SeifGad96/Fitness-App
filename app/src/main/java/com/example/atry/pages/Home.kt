@@ -51,7 +51,7 @@ fun Home(
     authViewModel: AuthViewModel = viewModel()
     ) {
     val exercises by exercisesViewModel.exercises.collectAsState()
-    var selectedBodyPart by remember { mutableStateOf("back") }
+    var selectedBodyPart by remember { mutableStateOf("") }
 
     val firebaseUser by authViewModel.firebaseUser.observeAsState()
     val username = firebaseUser?.displayName ?: "Guest"
@@ -60,7 +60,7 @@ fun Home(
     val selectedExerciseIds = sharedPref.getStringSet("selected_exercises", mutableSetOf()) ?: mutableSetOf()
 
     LaunchedEffect(selectedBodyPart, Unit) {
-        exercisesViewModel.fetchExercises(selectedBodyPart, limit = 20, offset = 0)
+        exercisesViewModel.fetchAllExercises(limit = 20, offset = 0)
     }
     val selectedExercisesList = exercises.filter { exercise -> selectedExerciseIds.contains(exercise.id) }
     Box(modifier = Modifier.fillMaxSize()) {
@@ -103,7 +103,7 @@ fun Home(
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
 
-                val randomExercises = exercises.shuffled().take(10)
+                val randomExercises = exercises.shuffled().take(15)
                 LazyRow(
                     modifier = Modifier.padding(bottom = 16.dp)
                 ) {

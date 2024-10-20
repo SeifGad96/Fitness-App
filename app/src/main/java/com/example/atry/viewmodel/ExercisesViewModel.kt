@@ -39,6 +39,18 @@ class ExercisesViewModel:ViewModel() {
             }
         }
     }
+    fun fetchAllExercises(limit: Int, offset: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+
+                val result = RetrofitInstance.api.getAllExercises(limit, offset)
+                _exercises.value = result.shuffled()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
 
     fun deleteExercise() {
         viewModelScope.launch(Dispatchers.IO) {
