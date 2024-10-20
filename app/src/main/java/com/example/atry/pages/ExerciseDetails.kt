@@ -28,8 +28,7 @@ import com.example.atry.viewmodel.ExercisesViewModel
 
 @Composable
 fun ExerciseDetails(
-    exerciseId: String, exercisesViewModel: ExercisesViewModel,
-    onSelectExercise: (Exercise) -> Unit
+    exerciseId: String, exercisesViewModel: ExercisesViewModel
 ) {
     val exercise by exercisesViewModel.exerciseDetails.collectAsState()
     LaunchedEffect(exerciseId) {
@@ -80,29 +79,37 @@ fun ExerciseDetails(
                     Text(text = instruction)
                 }
                 Spacer(modifier = Modifier.height(20.dp))
+
                 val sharedPref = LocalContext.current.getSharedPreferences(
                     "user_preferences",
                     Context.MODE_PRIVATE
+
                 )
+                val selectedExercises =
+                    sharedPref.getStringSet("selected_exercises", mutableSetOf())?.toMutableSet()
                 val editor = sharedPref.edit()
+                val isSelected = selectedExercises?.contains(exerciseData.id) == true
                 Button(
                     onClick = {
-                        val selectedExercises =
-                            sharedPref.getStringSet("selected_exercises", mutableSetOf())
-                                ?.toMutableSet()
-                        selectedExercises?.add(exerciseData.id)
+                        if(isSelected){
+                            selectedExercises?.remove(exerciseData.id)
+                        }
+                        else{
+                            selectedExercises?.add(exerciseData.id)
+                        }
                         editor.putStringSet("selected_exercises", selectedExercises)
                         editor.apply()
                     },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFBB86FC),
+                        containerColor = if (isSelected) Color.Gray else Color(0xFFBB86FC)  ,
                         contentColor = Color.White
                     )
                 ) {
                     Text(
-                        text = "Select"
+
+                        text = if (isSelected) "Unselect" else "Select"
                     )
                 }
                 Spacer(modifier = Modifier.padding(bottom = 150.dp))

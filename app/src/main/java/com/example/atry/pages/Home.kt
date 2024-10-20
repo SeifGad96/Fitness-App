@@ -48,12 +48,10 @@ import com.example.atry.viewmodel.ExercisesViewModel
 fun Home(
     navController: NavController,
     exercisesViewModel: ExercisesViewModel,
-    //selectedExercises: List<Exercise>,
     authViewModel: AuthViewModel = viewModel()
     ) {
     val exercises by exercisesViewModel.exercises.collectAsState()
     var selectedBodyPart by remember { mutableStateOf("back") }
-    var selectedExercises by remember { mutableStateOf<List<Exercise>>(emptyList()) }
 
     val firebaseUser by authViewModel.firebaseUser.observeAsState()
     val username = firebaseUser?.displayName ?: "Guest"
@@ -62,7 +60,7 @@ fun Home(
     val selectedExerciseIds = sharedPref.getStringSet("selected_exercises", mutableSetOf()) ?: mutableSetOf()
 
     LaunchedEffect(selectedBodyPart, Unit) {
-        exercisesViewModel.fetchExercises(selectedBodyPart, limit = 10, offset = 0)
+        exercisesViewModel.fetchExercises(selectedBodyPart, limit = 20, offset = 0)
     }
     val selectedExercisesList = exercises.filter { exercise -> selectedExerciseIds.contains(exercise.id) }
     Box(modifier = Modifier.fillMaxSize()) {
@@ -105,11 +103,11 @@ fun Home(
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
 
-
+                val randomExercises = exercises.shuffled().take(10)
                 LazyRow(
                     modifier = Modifier.padding(bottom = 16.dp)
                 ) {
-                    items(exercises) { exercise ->
+                    items(randomExercises) { exercise ->
                         WorkoutCard(exercise) {
                             navController.navigate("exercise_details/${exercise.id}")
                         }
@@ -168,7 +166,7 @@ fun WorkoutCard(exercise: Exercise, onClick: () -> Unit) {
                 }
         ) {
             AsyncImage(
-                model = exercise.gifUrl, // Use imageUrl here
+                model = exercise.gifUrl,
                 contentDescription = exercise.name,
                 modifier = Modifier
                     .fillMaxWidth()
