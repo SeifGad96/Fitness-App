@@ -49,20 +49,31 @@ fun Home(
     navController: NavController,
     exercisesViewModel: ExercisesViewModel,
     authViewModel: AuthViewModel = viewModel()
-    ) {
+) {
     val exercises by exercisesViewModel.exercises.collectAsState()
-    var selectedBodyPart by remember { mutableStateOf("") }
-
     val firebaseUser by authViewModel.firebaseUser.observeAsState()
     val username = firebaseUser?.displayName ?: "Guest"
 
     val sharedPref = LocalContext.current.getSharedPreferences("user_preferences", Context.MODE_PRIVATE)
     val selectedExerciseIds = sharedPref.getStringSet("selected_exercises", mutableSetOf()) ?: mutableSetOf()
 
-    LaunchedEffect(selectedBodyPart, Unit) {
+    // State to store the shuffled random exercises
+    var randomExercises by remember { mutableStateOf<List<Exercise>>(emptyList()) }
+
+    LaunchedEffect(exercises) {
+        // Update the randomExercises only when exercises list is not empty
+        if (exercises.isNotEmpty()) {
+            randomExercises = exercises.shuffled().take(15)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        exercisesViewModel.deleteAllExercises()
         exercisesViewModel.fetchAllExercises(limit = 20, offset = 0)
     }
+
     val selectedExercisesList = exercises.filter { exercise -> selectedExerciseIds.contains(exercise.id) }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -80,22 +91,18 @@ fun Home(
                             .padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
-
                     ) {
                         CircularProgressIndicator()
-                        Text(
-                            text = "Loading..."
-                        )
+                        Text(text = "Loading...")
                     }
                 }
-                } else {
+            } else {
                 Text(
                     text = "Hello $username",
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     fontSize = TextUnit.Unspecified,
-                    modifier = Modifier.padding(top = 8.dp)
-
+                    modifier = Modifier.padding(top = 16.dp)
                 )
                 Text(
                     text = "Popular Workouts",
@@ -103,7 +110,6 @@ fun Home(
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
 
-                val randomExercises = exercises.shuffled().take(15)
                 LazyRow(
                     modifier = Modifier.padding(bottom = 16.dp)
                 ) {
@@ -120,32 +126,25 @@ fun Home(
                 )
                 if (selectedExercisesList.isEmpty()) {
                     Text(text = "No exercises selected yet", modifier = Modifier.padding(16.dp))
-                }
-                else{
+                } else {
                     LazyColumn(modifier = Modifier.clickable {
                         navController.navigate("exercise_details")
                     }) {
                         items(selectedExercisesList) { exercise ->
-                            TodayPlanItem(
-                                exercise
-                            ) {
+                            TodayPlanItem(exercise) {
                                 navController.navigate("exercise_details/${exercise.id}")
-
                             }
                         }
                     }
-
                 }
-
-
-
             }
-
         }
         BottomNavigationBar(navController)
         Back_Handler()
     }
 }
+
+
 @Composable
 fun WorkoutCard(exercise: Exercise, onClick: () -> Unit) {
     Card(

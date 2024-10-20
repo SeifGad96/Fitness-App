@@ -44,12 +44,13 @@ class ExercisesViewModel:ViewModel() {
             try {
 
                 val result = RetrofitInstance.api.getAllExercises(limit, offset)
-                _exercises.value = result.shuffled()
+                _exercises.value = result
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
 
 
     fun deleteExercise() {
