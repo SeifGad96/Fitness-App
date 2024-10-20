@@ -1,8 +1,8 @@
-# Fitness App
+# ActiveLive App
 
 ## Overview
 
-The Fitness App is designed to help users manage their fitness journey by providing personalized workout plans and nutrition guidance. The app allows users to log in, sign up, and input their personal data to receive tailored exercise and diet recommendations.
+The ActiveLive App is designed to help users manage their fitness journey by providing personalized workout plans and nutrition guidance. The app allows users to log in, sign up, and input their personal data to receive tailored exercise and diet recommendations.
 
 ## Features
 
