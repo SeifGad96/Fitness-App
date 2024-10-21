@@ -52,7 +52,7 @@ The ActiveLive App is designed to help users manage their fitness journey by pro
 - Programming Language: Kotlin 
 - UI Framework: Jetpack Compose 
 - Database: Firebase Firestore
-- API Integration:-Nutrition API: Provides healthy food suggestions and meal preparation details. -Exercise API: Fetches workout routines from external sources.
+- API Integration: -Exercise API: Fetches workout routines from external sources.
 - Firebase: Used for authentication and cloud storage.
 - Shared Preference
 
@@ -60,6 +60,8 @@ The ActiveLive App is designed to help users manage their fitness journey by pro
 ## License
 
 - This project is licensed under DEPI.
+ ## Download
+ you can download our app from here **https://drive.google.com/drive/folders/1--xR85zAbwgxT-y2zuKIeIbINqjmmCzf?hl=ar**
 
 ## Team Members
 
